@@ -10,6 +10,9 @@ import menu_icon from './menu_icon.png'
 import arrow_icon from './arrow_icon.png'
 import code from './code.svg'
 import bgImage from './bgImage.svg'
+import eye_closed_icon from './eye_closed_icon.png'
+import eye_open_icon from './eye_open_icon.png'
+
 
 const assets = {
     avatar_icon,
@@ -24,6 +27,8 @@ const assets = {
     arrow_icon,
     code,
     bgImage,
+    eye_open_icon,
+    eye_closed_icon,
 }
 
 export default assets;

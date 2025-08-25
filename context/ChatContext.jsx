@@ -1,100 +1,130 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { AuthContext } from "./AuthContext";
-import toast from "react-hot-toast";
+import { createContext, useEffect, useState } from "react";
+import axios from "axios";
+import { io } from "socket.io-client";
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.baseURL = backendUrl;
+axios.defaults.withCredentials = true; // ✅ send cookies/jwt
+
+// ✅ attach token automatically (if stored in localStorage)
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
-  const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [socket, setSocket] = useState(null);
   const [unseenMessages, setUnseenMessages] = useState({});
+  const [users, setUsers] = useState([]);
 
-  const { socket, axios } = useContext(AuthContext);
+  // connect socket
+  useEffect(() => {
+    const newSocket = io(backendUrl, {
+      query: { userId: localStorage.getItem("userId") },
+    });
+    setSocket(newSocket);
 
-  // function to get all users for sidebar
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []);
+
+  // ✅ fetch all users
   const getUsers = async () => {
     try {
-      const { data } = await axios.get("/api/messages/users");
-      if (data.success) {
-        setUsers(data.users);
-        setUnseenMessages(data.unseenMessages || {});
-      }
-    } catch (error) {
-      toast.error(error.message);
+      const res = await axios.get("/api/users");
+      setUsers(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Error fetching users", err);
+      setUsers([]);
     }
-  };
-
-  // function to get messages for selected user
-  const getMessages = async (userId) => {
-    try {
-      const { data } = await axios.get(`/api/messages/${userId}`);
-      if (data.success) {
-        setMessages(data.messages);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  // function to send message to selected user
-  const sendMessage = async (messageData) => {
-    try {
-      if (!selectedUser) return;
-      const { data } = await axios.post(
-        `/api/messages/send/${selectedUser._id}`,
-        messageData
-      );
-      if (data.success) {
-        setMessages((prevMessages) => [...prevMessages, data.newMessage]);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  // function to subscribe to messages for selected user
-  const subscribeToMessages = () => {
-    if (!socket) return;
-
-    socket.on("newMessage", (newMessage) => {
-      if (selectedUser && newMessage.senderId === selectedUser._id) {
-        newMessage.seen = true;
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-        axios.put(`/api/messages/mark/${newMessage._id}`);
-      } else {
-        setUnseenMessages((prev) => ({
-          ...prev,
-          [newMessage.senderId]: prev[newMessage.senderId]
-            ? prev[newMessage.senderId] + 1
-            : 1,
-        }));
-      }
-    });
-  };
-
-  // function unsubscribe for messages
-  const unsubscribeFromMessages = () => {
-    if (socket) socket.off("newMessage");
   };
 
   useEffect(() => {
-    subscribeToMessages();
-    return () => unsubscribeFromMessages();
-  }, [socket, selectedUser]);
+    getUsers();
+  }, []);
 
-  const value = {
-    messages,
-    users,
-    selectedUser,
-    setSelectedUser,
-    unseenMessages,
-    setUnseenMessages,
-    setMessages,
-    getUsers,
-    getMessages,
-    sendMessage,
+  // ✅ fetch messages of selected user
+  const getMessages = async (userId) => {
+    if (!userId) return;
+    try {
+      const res = await axios.get(`/api/messages/${userId}`);
+      setMessages(res.data.messages || []);
+    } catch (err) {
+      console.error("Error fetching messages", err);
+    }
   };
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
+  // fetch messages whenever selectedUser changes
+  useEffect(() => {
+    if (selectedUser?._id) {
+      getMessages(selectedUser._id);
+      setUnseenMessages((prev) => ({ ...prev, [selectedUser._id]: 0 }));
+    }
+  }, [selectedUser]);
+
+  // socket listener
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("newMessage", (msg) => {
+      if (msg.senderId === selectedUser?._id) {
+        setMessages((prev) => [...prev, msg]);
+      } else {
+        setUnseenMessages((prev) => ({
+          ...prev,
+          [msg.senderId]: (prev[msg.senderId] || 0) + 1,
+        }));
+      }
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [socket, selectedUser]);
+
+  // ✅ send message
+  const sendMessage = async ({ text, image }) => {
+    if (!selectedUser) return;
+
+    try {
+      const res = await axios.post(`/api/messages/send/${selectedUser._id}`, {
+        text,
+        image,
+      });
+
+      if (res.data?.newMessage) {
+        setMessages((prev) => [...prev, res.data.newMessage]);
+        socket.emit("sendMessage", res.data.newMessage);
+      }
+    } catch (err) {
+      console.error("Error sending message", err);
+    }
+  };
+
+  return (
+    <ChatContext.Provider
+      value={{
+        users,
+        getUsers,
+        selectedUser,
+        setSelectedUser,
+        messages,
+        setMessages,
+        getMessages,
+        sendMessage,
+        unseenMessages,
+        setUnseenMessages,
+      }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
 };
