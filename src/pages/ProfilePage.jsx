@@ -35,6 +35,8 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
       <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg">
+        
+        {/* Left side form */}
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-5 p-10 flex-1"
@@ -53,13 +55,13 @@ const ProfilePage = () => {
               hidden
             />
             <img
+              className="w-20 h-20 rounded-full object-cover"
               src={
                 selectedImage
                   ? URL.createObjectURL(selectedImage)
-                  : assets.avatar_icon
+                  : authUser?.profilePic || assets.avatar_icon
               }
-              alt=""
-              className={`w-12 h-12 ${selectedImage ? "rounded-full" : ""}`}
+              alt="Profile"
             />
             upload profile image
           </label>
@@ -90,14 +92,15 @@ const ProfilePage = () => {
           </button>
         </form>
 
+        {/* Right side big preview */}
         <img
-          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImage && 'rounded-full'}`}
+          className="w-44 h-44 object-cover rounded-full mx-10 max-sm:mt-10"
           src={
             selectedImage
               ? URL.createObjectURL(selectedImage)
-              : authUser?.profilePic || assets.logo_icon
+              : authUser?.profilePic || assets.avatar_icon
           }
-          alt="Profile"
+          alt="Profile Preview"
         />
       </div>
     </div>
