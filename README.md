@@ -1,6 +1,6 @@
-# Chat App — Client
+# Chat App - Client
 
-Frontend for the Chat App project — a real-time messaging web app built with React and Vite. Connects to the [Chat-App-Server](https://github.com/Vanisha-Sharma/Chat-App-Server) backend for authentication, messaging, and live user status.
+Frontend for the Chat App project a real-time messaging web app built with React and Vite. Connects to the [Chat-App-Server](https://github.com/Vanisha-Sharma/Chat-App-Server) backend for authentication, messaging, and live user status.
 
 **Live App:** [chat-app-client-eight-alpha.vercel.app](https://chat-app-client-eight-alpha.vercel.app)
 **Backend repo:** [Chat-App-Server](https://github.com/Vanisha-Sharma/Chat-App-Server)
