@@ -54,13 +54,13 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-auto text-white transition-all duration-300 ${
+      className={`bg-[#8185B2]/10 h-full p-4 sm:p-5 rounded-r-xl overflow-y-auto text-white transition-all duration-300 ${
         selectedUser ? "max-md:hidden" : ""
       }`}
     >
       <div className="pb-5 border-b border-gray-700/40">
         <div className="flex justify-between items-center">
-          <img src={assets.logo} alt="logo" className="max-w-36" />
+          <img src={assets.logo} alt="logo" className="max-w-28 sm:max-w-36" />
 
           {/* ✅ Dropdown menu */}
           <div className="relative py-2" ref={menuRef}>
@@ -101,12 +101,12 @@ const Sidebar = () => {
           <img
             src={assets.search_icon}
             alt="Search"
-            className="w-4 opacity-80"
+            className="w-4 opacity-80 shrink-0"
           />
           <input
             onChange={(e) => setInput(e.target.value)}
             type="text"
-            className="bg-transparent border-none outline-none text-white text-sm placeholder-[#c8c8c8] flex-1"
+            className="bg-transparent border-none outline-none text-white text-sm placeholder-[#c8c8c8] flex-1 min-w-0"
             placeholder="Search User..."
           />
         </div>
@@ -134,12 +134,12 @@ const Sidebar = () => {
               <img
                 src={user.profilePic || assets.avatar_icon}
                 alt={user.fullName}
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-10 h-10 rounded-full object-cover shrink-0"
               />
 
               {/* name + last message */}
-              <div className="flex flex-col">
-                <p className="font-semibold text-white">{user.fullName}</p>
+              <div className="flex flex-col min-w-0">
+                <p className="font-semibold text-white truncate">{user.fullName}</p>
                 <p className="text-sm text-gray-400 truncate">
                   {user.lastMessage}
                 </p>
