@@ -33,13 +33,13 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
-      <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg">
+    <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center px-4 py-8">
+      <div className="w-full sm:w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex flex-col-reverse sm:flex-row items-center justify-between rounded-lg">
         
         {/* Left side form */}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-5 p-10 flex-1"
+          className="flex flex-col gap-5 p-6 sm:p-10 flex-1 w-full"
         >
           <h3 className="text-lg">Profile details</h3>
 
@@ -55,7 +55,7 @@ const ProfilePage = () => {
               hidden
             />
             <img
-              className="w-20 h-20 rounded-full object-cover"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover"
               src={
                 selectedImage
                   ? URL.createObjectURL(selectedImage)
@@ -63,7 +63,7 @@ const ProfilePage = () => {
               }
               alt="Profile"
             />
-            upload profile image
+            <span className="text-sm sm:text-base">upload profile image</span>
           </label>
 
           <input
@@ -72,7 +72,7 @@ const ProfilePage = () => {
             type="text"
             required
             placeholder="Your Name"
-            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 w-full"
           />
 
           <textarea
@@ -80,7 +80,7 @@ const ProfilePage = () => {
             value={bio}
             required
             placeholder="Write profile bio"
-            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 w-full"
             rows={4}
           ></textarea>
 
@@ -94,7 +94,7 @@ const ProfilePage = () => {
 
         {/* Right side big preview */}
         <img
-          className="w-44 h-44 object-cover rounded-full mx-10 max-sm:mt-10"
+          className="w-28 h-28 sm:w-44 sm:h-44 object-cover rounded-full mt-6 sm:mt-0 sm:mx-10"
           src={
             selectedImage
               ? URL.createObjectURL(selectedImage)
