@@ -26,16 +26,20 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
+    <div className="min-h-screen bg-cover bg-center flex flex-col items-center justify-center gap-6 sm:gap-8 sm:flex-row sm:justify-evenly px-4 py-8 backdrop-blur-2xl">
       {/* Left */}
-      <img src={assets.logo_big} alt="" className="w-[min(30vw,250px)]" />
+      <img
+        src={assets.logo_big}
+        alt=""
+        className="w-[min(50vw,180px)] sm:w-[min(30vw,250px)]"
+      />
 
       {/* Right */}
       <form
         onSubmit={onSubmitHandler}
-        className="w-[400px] border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
+        className="w-full max-w-[400px] border-2 bg-white/8 text-white border-gray-500 p-5 sm:p-6 flex flex-col gap-5 sm:gap-6 rounded-lg shadow-lg"
       >
-        <h2 className="font-medium text-2xl flex justify-between items-center">
+        <h2 className="font-medium text-xl sm:text-2xl flex justify-between items-center">
           {currState}
           {isDataSubmitted && (
             <img
@@ -52,7 +56,7 @@ const LoginPage = () => {
             onChange={(e) => setFullName(e.target.value)}
             value={fullName}
             type="text"
-            className="p-2 border border-gray-500 rounded-md focus:outline-none"
+            className="p-2 border border-gray-500 rounded-md focus:outline-none w-full"
             placeholder="Full Name"
             required
           />
@@ -66,11 +70,11 @@ const LoginPage = () => {
               type="email"
               placeholder="Email Address"
               required
-              className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full"
             />
 
             {/* Password field with eye icon */}
-            <div className="relative">
+            <div className="relative w-full">
               <input
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
@@ -94,7 +98,7 @@ const LoginPage = () => {
             onChange={(e) => setBio(e.target.value)}
             value={bio}
             rows={4}
-            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-indigo-500"
+            className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-indigo-500 w-full"
             placeholder="Provide a short bio..."
             required
           ></textarea>
@@ -108,8 +112,8 @@ const LoginPage = () => {
         </button>
 
         {/* Checkbox row */}
-        <div className="flex items-center gap-2">
-          <input type="checkbox" />
+        <div className="flex items-start sm:items-center gap-2">
+          <input type="checkbox" className="mt-1 sm:mt-0" />
           <p className="text-sm">Agree to the terms of use & private policy.</p>
         </div>
 
